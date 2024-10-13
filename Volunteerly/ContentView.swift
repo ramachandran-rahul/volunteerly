@@ -25,22 +25,7 @@ struct ContentView: View {
                 VStack {
                     if userSession.isLoggedIn {
                         // Show the main app content
-                        Text("Welcome Back\n\(FirebaseAuth.Auth.auth().currentUser?.displayName ?? "User")")
-                            .font(.title)
-                            .padding()
-                        Button(action: {
-                            userSession.logoutUser()
-                        }) {
-                            Text("Logout")
-                                .foregroundColor(.white)
-                                .frame(maxWidth: .infinity)
-                                .padding()
-                                .background(Color.red)
-                                .cornerRadius(10)
-                                .shadow(radius: 5)
-                                .padding(.horizontal)
-                        }
-                        // Your main view for logged-in users
+                        MainTabView(userSession: userSession)
                     } else {
                         // Show the login screen
                         LoginView(userSession: userSession)
