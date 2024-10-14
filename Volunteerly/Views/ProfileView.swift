@@ -13,23 +13,22 @@ struct ProfileView: View {
     
     var body: some View {
         VStack {
-            // Static Profile Header Section
-            VStack {
-                Text("Profile")
-                    .font(.largeTitle)
-                    .bold()
-                    .padding(.top)
-                
-                VStack(alignment: .leading, spacing: 10) {
-                    // User Details Section
-                    Text("\(FirebaseAuth.Auth.auth().currentUser?.displayName ?? "No Name")").font(.title2).fontWeight(.semibold)
-                    Text("\(FirebaseAuth.Auth.auth().currentUser?.email ?? "No Email")").font(.title3).fontWeight(.semibold)
-                    Text("User Preferences:").font(.title3).fontWeight(.semibold)
-                    CategoryPillView(text: "Environmental")
+            Text("Volunteer Profile")
+                .font(.largeTitle)
+                .bold()
+                .padding(.vertical, 10)
+                .padding(.bottom, 10)
+            HStack(alignment: .top) {
+                    VStack(alignment: .leading, spacing: 10) {
+                        Text("\(FirebaseAuth.Auth.auth().currentUser?.displayName ?? "No Name")").font(.title2).fontWeight(.semibold)
+                        Text("\(FirebaseAuth.Auth.auth().currentUser?.email ?? "No Email")").font(.body).fontWeight(.semibold).padding(.bottom)
+                        Text("User Preferences:").font(.title3).fontWeight(.semibold)
+                        CategoryPillView(text: "Environmental")
+                    }
                     
+                Spacer()
                     // Center-aligned Logout Button
                     HStack {
-                        Spacer() // Pushes the content to the center
                         HStack {
                             Image(systemName: "ipad.and.arrow.forward")
                                 .foregroundColor(.red)
@@ -43,16 +42,12 @@ struct ProfileView: View {
                             RoundedRectangle(cornerRadius: 20)
                                 .stroke(Color.red, lineWidth: 1)
                         )
-                        Spacer()
                     }
                     .padding(.top, 5)
                 }
-                .padding(.top, 5)
-                .padding(.horizontal)
-                .padding(.bottom, 5)
-
-            }
-            .padding(.bottom)
+            .padding(.bottom, 20)
+                .padding(.leading, 20)
+                .padding(.trailing, 10)
             
             // Scrollable Events Section
             ScrollView {
@@ -60,7 +55,7 @@ struct ProfileView: View {
                     Text("\(FirebaseAuth.Auth.auth().currentUser?.displayName ?? "No Name")'s Events")
                         .font(.title2)
                         .bold()
-                        .padding(.leading, 16)
+                        .padding(.leading, 20)
                     
                     // Dummy event tiles
                     VStack(spacing: 16) {
