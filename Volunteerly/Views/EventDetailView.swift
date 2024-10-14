@@ -41,19 +41,21 @@ struct EventDetailView: View {
                 }
                 .padding()
 
-                VStack(alignment: .leading, spacing: 30) {
-                    Text("**Organization**: \(event.organisation)")
-                    Text("**Description**: \(event.description)")
-                    HStack {
-                        Text("**Start Date**: \(event.startDate, formatter: DateFormatterUtil.shared)")
-                        Spacer()
-                        Text("**End Date**: \(event.endDate, formatter: DateFormatterUtil.shared)")
+                ScrollView {
+                    VStack(alignment: .leading, spacing: 30) {
+                        Text("**Organization**: \(event.organisation)")
+                        Text("**Description**: \(event.description)")
+                        HStack {
+                            Text("**Start Date**: \(event.startDate, formatter: DateFormatterUtil.shared)")
+                            Spacer()
+                            Text("**End Date**: \(event.endDate, formatter: DateFormatterUtil.shared)")
+                        }
+                        Text("**Contact Email**: \(event.contactEmail)")
                     }
-                    Text("**Contact Email**: \(event.contactEmail)")
-                }
-                .padding(.horizontal)
-                .padding(.top, 15)
-                .padding(.bottom, 50)
+                    .padding(.horizontal)
+                    .padding(.top, 15)
+                }.frame(height: 350)
+                
                 Button(action: {
                     
                 }) {
