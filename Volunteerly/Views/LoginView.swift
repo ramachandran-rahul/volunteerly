@@ -15,6 +15,7 @@ struct LoginView: View {
     @State private var showCreateAccountSheet = false
     @State private var showResetPasswordSheet = false
     @ObservedObject var userSession: UserSession
+    var loginViewModel: LoginViewModel
     
     var isFormValid: Bool {
         return userSession.isValidEmail(email) && !password.isEmpty
@@ -54,6 +55,9 @@ struct LoginView: View {
                 userSession.loginUser(email: email, password: password) { errorMessage in
                     if let errorMessage = errorMessage {
                         loginErrorMessage = errorMessage
+                    } else {
+                        // Setup user document after successful login
+                        loginViewModel.setupUserDocument()
                     }
                 }
             }) {
@@ -101,7 +105,7 @@ struct LoginView: View {
 struct LoginView_Previews: PreviewProvider {
     static var previews: some View {
         NavigationView {
-            LoginView(userSession: UserSession())
+            LoginView(userSession: UserSession(), loginViewModel: LoginViewModel(contentViewModel: ContentViewModel(), eventsViewModel: EventsViewModel()))
         }
     }
 }

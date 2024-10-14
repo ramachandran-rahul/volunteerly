@@ -6,15 +6,17 @@
 //
 
 import SwiftUI
-import FirebaseFirestore
+import FirebaseAuth
 
 class EventsViewModel: ObservableObject {
     @Published var events: [Event] = []
     private var firestoreService = FirestoreService()
 
-    // Fetch events from Firestore
+    // Fetch events based on user's preferences
     func fetchEvents(completion: @escaping () -> Void) {
-        firestoreService.fetchEvents { [weak self] fetchedEvents in
+        guard let userID = FirebaseAuth.Auth.auth().currentUser?.uid else { return }
+        
+        firestoreService.fetchEvents(for: userID) { [weak self] fetchedEvents in
             DispatchQueue.main.async {
                 self?.events = fetchedEvents
                 completion()  // Notify completion

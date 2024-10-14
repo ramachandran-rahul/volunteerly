@@ -9,8 +9,7 @@ import SwiftUI
 import FirebaseAuth
 
 struct ContentView: View {
-    @State private var isLoading = true
-    @State private var isDataLoaded = false
+    @StateObject var contentViewModel = ContentViewModel()
     @StateObject var userSession = UserSession()
     @StateObject var eventsViewModel = EventsViewModel()
     
@@ -21,33 +20,35 @@ struct ContentView: View {
                            startPoint: .top,
                            endPoint: .bottom)
             .ignoresSafeArea()
-            if isLoading || !isDataLoaded {
-                SplashScreenView(isLoading: $isLoading)
-            } else { // Redirects to the relevant view after delay
-                VStack {
-                    if userSession.isLoggedIn {
-                        // Show the main app content
-                        MainTabView(userSession: userSession)
-                            .environmentObject(eventsViewModel)
-                    } else {
-                        // Show the login screen
-                        LoginView(userSession: userSession)
-                    }
+            
+            if contentViewModel.showSplashScreen {
+                SplashScreenView(isLoading: $contentViewModel.isLoading)
+            } else {
+                if userSession.isLoggedIn && contentViewModel.isDataLoaded {
+                    // Show the main app content
+                    MainTabView(userSession: userSession)
+                        .environmentObject(eventsViewModel)
+                } else {
+                    // Show the login screen
+                    LoginView(userSession: userSession, loginViewModel: LoginViewModel(contentViewModel: contentViewModel, eventsViewModel: eventsViewModel))
                 }
             }
         }
         .onAppear {
-            // Fetch events when the app loads
-            eventsViewModel.fetchEvents {
-                DispatchQueue.main.asyncAfter(deadline: .now() + 1) {
-                    isDataLoaded = true // Mark data as loaded after 1 second
-                    // Delay splash screen for 2 seconds after data is loaded
-                    DispatchQueue.main.asyncAfter(deadline: .now() + 2) {
-                        isLoading = false
+            // Check if the user is still authenticated
+            userSession.checkIfUserIsLoggedIn {
+                if userSession.isLoggedIn {
+                    // If the user is logged in, load events and user data
+                    contentViewModel.loadDataForLoggedInUser(eventsViewModel: eventsViewModel) {
+                        // Completion handler for future extensibility
                     }
+                } else {
+                    // If the user is not logged in, show splash screen for 2 seconds then go to login
+                    contentViewModel.showSplashScreenForLoggedOutUser()
                 }
             }
         }
+        
     }
 }
 

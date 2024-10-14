@@ -16,12 +16,24 @@ class UserSession: ObservableObject {
         checkIfUserIsLoggedIn()
     }
 
-    // Check if a user is already logged in
-    func checkIfUserIsLoggedIn() {
-        if Auth.auth().currentUser != nil {
-            isLoggedIn = true
+    // Check if a user is already logged in and validate user status
+    func checkIfUserIsLoggedIn(completion: @escaping () -> Void = {}) {
+        if let user = Auth.auth().currentUser {
+            // Check if the user still exists in FirebaseAuth
+            user.reload { error in
+                if error != nil {
+                    // User does not exist or there was an error, log out the user
+                    self.logoutUser()
+                } else {
+                    // User is valid and authenticated
+                    self.isLoggedIn = true
+                }
+                completion() // Call completion handler to continue the app flow
+            }
         } else {
+            // No user is logged in
             isLoggedIn = false
+            completion() // Call completion handler to continue the app flow
         }
     }
 

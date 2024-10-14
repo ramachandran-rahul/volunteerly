@@ -10,6 +10,7 @@ import MapKit
 import FirebaseFirestore
 
 struct EventDetailView: View {
+    @State var showSignUpConfirmation: Bool = false
     var event: Event
 
     // Remove static mapRegion initialization and use a state for MapCameraPosition
@@ -57,7 +58,7 @@ struct EventDetailView: View {
                 }.frame(height: 350)
                 
                 Button(action: {
-                    
+                    showSignUpConfirmation = true
                 }) {
                     Text("Sign Up for Event")
                         .foregroundColor(.white)
@@ -69,6 +70,16 @@ struct EventDetailView: View {
                         .shadow(radius: 5)
                 }
                 .padding()
+                .alert(isPresented: $showSignUpConfirmation) {
+                    Alert(
+                        title: Text("Confirm Sign-Up"),
+                        message: Text("Are you sure you want to sign up for this event?"),
+                        primaryButton: .default(Text("Yes"), action: {
+                            
+                        }),
+                        secondaryButton: .cancel()
+                    )
+                }
             }
         }
     }
