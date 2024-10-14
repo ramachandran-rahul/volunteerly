@@ -6,20 +6,23 @@
 //
 
 import SwiftUI
+import FirebaseFirestore
 
 struct EventTileView: View {
+    var event: Event
     var isEventComplete: Bool = false;
+    @State private var showEventDetail = false
     
     var body: some View {
         VStack(alignment: .leading, spacing: 5) {
-            Text("Volunteering Opportunity Name")
+            Text(event.title)
                 .font(.headline)
                 .bold()
-            Text("**Organization**: Example Organization")
+            Text("**Organization**: \(event.organisation)")
                 .font(.subheadline)
-            Text("**Dates**: 10th Oct - 12th Oct, 2024")
+            Text("**Dates**: \(event.startDate, formatter: DateFormatterUtil.shared) - \(event.endDate, formatter: DateFormatterUtil.shared)")
                 .font(.subheadline)
-            CategoryPillView(text: "Environmental").padding(.top, 5)
+            CategoryPillView(text: event.category).padding(.top, 5)
             HStack {
                 Spacer()
                 Image(systemName: "checkmark.circle.fill").foregroundStyle(Color.green)
@@ -33,9 +36,15 @@ struct EventTileView: View {
         .frame(maxWidth: .infinity)
         .padding(.horizontal, 15)
         .padding(.vertical, 5)
+        .onTapGesture {
+            showEventDetail.toggle()
+        }
+        .sheet(isPresented: $showEventDetail) {
+            EventDetailView(event: event)
+        }
     }
 }
 
 #Preview {
-    EventTileView()
+    EventTileView(event: Event(title: "Beach Cleanup", organisation: "Ocean Care", coordinates: GeoPoint(latitude: -33.8688, longitude: 151.2093), startDate: Date(), endDate: Date(), description: "Help clean up the beach", category: "Environmental", contactEmail: "contact@oceancare.org"))
 }

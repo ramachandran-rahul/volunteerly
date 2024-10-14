@@ -10,7 +10,9 @@ import FirebaseAuth
 
 struct ContentView: View {
     @State private var isLoading = true
+    @State private var isDataLoaded = false
     @StateObject var userSession = UserSession()
+    @StateObject var eventsViewModel = EventsViewModel()
     
     var body: some View {
         ZStack {
@@ -19,16 +21,29 @@ struct ContentView: View {
                            startPoint: .top,
                            endPoint: .bottom)
             .ignoresSafeArea()
-            if isLoading {
+            if isLoading || !isDataLoaded {
                 SplashScreenView(isLoading: $isLoading)
             } else { // Redirects to the relevant view after delay
                 VStack {
                     if userSession.isLoggedIn {
                         // Show the main app content
                         MainTabView(userSession: userSession)
+                            .environmentObject(eventsViewModel)
                     } else {
                         // Show the login screen
                         LoginView(userSession: userSession)
+                    }
+                }
+            }
+        }
+        .onAppear {
+            // Fetch events when the app loads
+            eventsViewModel.fetchEvents {
+                DispatchQueue.main.asyncAfter(deadline: .now() + 1) {
+                    isDataLoaded = true // Mark data as loaded after 1 second
+                    // Delay splash screen for 2 seconds after data is loaded
+                    DispatchQueue.main.asyncAfter(deadline: .now() + 2) {
+                        isLoading = false
                     }
                 }
             }

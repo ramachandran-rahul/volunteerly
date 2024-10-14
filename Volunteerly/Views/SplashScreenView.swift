@@ -19,7 +19,8 @@ struct SplashScreenView: View {
                 .aspectRatio(contentMode: .fit)
                 .frame(width: 200, height: 200)
                 .padding(.bottom)
-            Text("Volunteerly").font(.title).fontWeight(.bold).padding(.bottom, 200)
+            Text("Volunteerly").font(.title).fontWeight(.bold).padding(.bottom, 10)
+            Text("Find volunteering opportunities in your area").fontWeight(.semibold).padding(.horizontal, 30).padding(.bottom, 200).multilineTextAlignment(.center)
             Spacer()
         }
         .onAppear {
@@ -30,11 +31,9 @@ struct SplashScreenView: View {
             SVProgressHUD.setRingThickness(5.0)
             SVProgressHUD.setOffsetFromCenter(UIOffset(horizontal: 0, vertical: 250))
             SVProgressHUD.show()
-            
-            DispatchQueue.main.asyncAfter(deadline: .now() + 3) {
-                SVProgressHUD.dismiss()
-                isLoading = false
-            }
+        }
+        .onDisappear() {
+            SVProgressHUD.dismiss()
         }
     }
 }

@@ -9,6 +9,7 @@ import SwiftUI
 
 struct MainTabView: View {
     @ObservedObject var userSession: UserSession
+    @EnvironmentObject var eventsViewModel: EventsViewModel
 
     var body: some View {
         TabView {
@@ -27,4 +28,5 @@ struct MainTabView: View {
 
 #Preview {
     MainTabView(userSession: UserSession())
+        .environmentObject(EventsViewModel()) 
 }

@@ -19,31 +19,30 @@ struct ProfileView: View {
                 .padding(.vertical, 10)
                 .padding(.bottom, 10)
             HStack(alignment: .top) {
-                    VStack(alignment: .leading, spacing: 10) {
-                        Text("\(FirebaseAuth.Auth.auth().currentUser?.displayName ?? "No Name")").font(.title2).fontWeight(.semibold)
-                        Text("\(FirebaseAuth.Auth.auth().currentUser?.email ?? "No Email")").font(.body).fontWeight(.semibold).padding(.bottom)
-                        Text("User Preferences:").font(.title3).fontWeight(.semibold)
-                        CategoryPillView(text: "Environmental")
-                    }
-                    
+                VStack(alignment: .leading, spacing: 10) {
+                    Text("\(FirebaseAuth.Auth.auth().currentUser?.displayName ?? "No Name")").font(.title2).fontWeight(.semibold)
+                    Text("\(FirebaseAuth.Auth.auth().currentUser?.email ?? "No Email")").font(.body).fontWeight(.semibold).padding(.bottom)
+                    Text("User Preferences:").font(.title3).fontWeight(.semibold)
+                    CategoryPillView(text: "Environmental")
+                }
+                
                 Spacer()
-                    // Center-aligned Logout Button
-                    HStack {
-                        HStack {
-                            Image(systemName: "ipad.and.arrow.forward")
-                                .foregroundColor(.red)
-                            Text("Logout")
-                                .foregroundColor(.red)
-                        }
-                        .padding(8)
-                        .padding(.horizontal)
-                        .background(Color.white)
-                        .overlay(
-                            RoundedRectangle(cornerRadius: 20)
-                                .stroke(Color.red, lineWidth: 1)
-                        )
-                    }
-                    .padding(.top, 5)
+                Button(action: userSession.logoutUser) {
+                HStack {
+                    Image(systemName: "ipad.and.arrow.forward")
+                        .foregroundColor(.red)
+                    Text("Logout")
+                        .foregroundColor(.red)
+                }
+                .padding(8)
+                .padding(.horizontal)
+                .background(Color.white)
+                .overlay(
+                    RoundedRectangle(cornerRadius: 20)
+                        .stroke(Color.red, lineWidth: 1)
+                )
+                .padding(.top, 5)
+            }
                 }
             .padding(.bottom, 20)
                 .padding(.leading, 20)
@@ -60,7 +59,7 @@ struct ProfileView: View {
                     // Dummy event tiles
                     VStack(spacing: 16) {
                         ForEach(0..<5) { _ in
-                            EventTileView()
+//                            EventTileView()
                         }
                     }
                     .frame(maxWidth: .infinity)
