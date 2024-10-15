@@ -77,7 +77,8 @@ struct ProfileView: View {
                     }
                     .foregroundColor(.red)
                     .padding(5)
-                    .padding(.horizontal)
+                    .padding(.horizontal, 7)
+                    .padding(.trailing, 3)
                     .background(Color.white)
                     .cornerRadius(20)
                     .overlay(
@@ -131,6 +132,15 @@ struct ProfileView: View {
                         }
                     }
                     .padding(.vertical)
+                }
+                .refreshable {
+                    // Fetch the latest events or user data when the user performs a pull-to-refresh action
+                    eventsViewModel.fetchEvents {
+                        print("Events refreshed")
+                    }
+                    userViewModel.fetchUserData {
+                        print("User data refreshed")
+                    }
                 }
             }
         }

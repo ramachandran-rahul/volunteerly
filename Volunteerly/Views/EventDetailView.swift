@@ -11,6 +11,7 @@ import FirebaseFirestore
 
 struct EventDetailView: View {
     @State var showSignUpConfirmation: Bool = false
+    @State var showBackOutConfirmation: Bool = false
     var event: Event
     @EnvironmentObject var userViewModel: UserViewModel
 
@@ -56,41 +57,92 @@ struct EventDetailView: View {
                     }
                     .padding(.horizontal)
                     .padding(.top, 15)
+                    
+                    // Show "Booked" text if the user has already booked the event
+                    if userViewModel.bookedEvents.contains(event.id ?? "") {
+                        HStack {
+                            Image(systemName: "checkmark.circle.fill").font(.title2).foregroundStyle(Color.green)
+                            Text("You are registered for this event.")
+                                .font(.headline)
+                                .foregroundColor(.green)
+                        }
+                        .padding(.top, 50)
+                    }
                 }.frame(height: 350)
                 
-                Button(action: {
-                    showSignUpConfirmation = true
-                }) {
-                    Text("Sign Up for Event")
-                        .foregroundColor(.white)
-                        .font(.title3)
-                        .frame(maxWidth: .infinity)
+                // Show the button based on whether the user has booked the event
+                if userViewModel.bookedEvents.contains(event.id ?? "") {
+                    // If the user has booked the event, allow them to "Back Out" if the event hasn't started
+                    if Date() < event.startDate {
+                        Button(action: {
+                            showBackOutConfirmation = true
+                        }) {
+                            Text("Back Out of Event")
+                                .foregroundColor(.white)
+                                .font(.title3)
+                                .frame(maxWidth: .infinity)
+                                .padding()
+                                .background(Color.red)
+                                .cornerRadius(10)
+                                .shadow(radius: 5)
+                        }
                         .padding()
-                        .background(Color.blue)
-                        .cornerRadius(10)
-                        .shadow(radius: 5)
-                }
-                .padding()
-                .alert(isPresented: $showSignUpConfirmation) {
-                    Alert(
-                        title: Text("Confirm Sign-Up"),
-                        message: Text("Are you sure you want to sign up for this event?"),
-                        primaryButton: .default(Text("Yes"), action: {
-                            guard let eventID = event.id else {
-                                print("Invalid event ID")
-                                return
-                            }
-                            
-                            userViewModel.bookEvent(eventID: eventID) { success in
-                                if success {
-                                    print("Event successfully booked!")
-                                } else {
-                                    print("Failed to book event.")
+                        .alert(isPresented: $showBackOutConfirmation) {
+                            Alert(
+                                title: Text("Confirm Back Out"),
+                                message: Text("Are you sure you want to back out of this event?"),
+                                primaryButton: .default(Text("Yes"), action: {
+                                    guard let eventID = event.id else {
+                                        print("Invalid event ID")
+                                        return
+                                    }
+                                    userViewModel.updateEventBooking(eventID: eventID, shouldBook: false) { success in
+                                        if success {
+                                            print("Successfully backed out of the event!")
+                                        } else {
+                                            print("Failed to back out of event.")
+                                        }
+                                    }
+                                }),
+                                secondaryButton: .cancel()
+                            )
+                        }
+                    }
+                } else {
+                    // If the user hasn't booked the event, show the "Sign Up" button
+                    Button(action: {
+                        showSignUpConfirmation = true
+                    }) {
+                        Text("Sign Up for Event")
+                            .foregroundColor(.white)
+                            .font(.title3)
+                            .frame(maxWidth: .infinity)
+                            .padding()
+                            .background(Color.blue)
+                            .cornerRadius(10)
+                            .shadow(radius: 5)
+                    }
+                    .padding()
+                    .alert(isPresented: $showSignUpConfirmation) {
+                        Alert(
+                            title: Text("Confirm Sign-Up"),
+                            message: Text("Are you sure you want to sign up for this event?"),
+                            primaryButton: .default(Text("Yes"), action: {
+                                guard let eventID = event.id else {
+                                    print("Invalid event ID")
+                                    return
                                 }
-                            }
-                        }),
-                        secondaryButton: .cancel()
-                    )
+                                userViewModel.updateEventBooking(eventID: eventID, shouldBook: true) { success in
+                                    if success {
+                                        print("Event successfully booked!")
+                                    } else {
+                                        print("Failed to book event.")
+                                    }
+                                }
+                            }),
+                            secondaryButton: .cancel()
+                        )
+                    }
                 }
             }
         }

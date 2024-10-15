@@ -66,26 +66,30 @@ class UserViewModel: ObservableObject {
         }
     }
     
-    // Add event booking into user's document
-    func bookEvent(eventID: String, completion: @escaping (Bool) -> Void) {
+    // Update user's event booking status
+    func updateEventBooking(eventID: String, shouldBook: Bool, completion: @escaping (Bool) -> Void) {
         guard let userID = self.userID else { return }
 
         let userRef = Firestore.firestore().collection("users").document(userID)
+        
+        let updateAction: FieldValue = shouldBook ? .arrayUnion([eventID]) : .arrayRemove([eventID])
 
-        // Add the event ID to the user's bookedEvents array
+        // Update the user's bookedEvents array based on shouldBook (add or remove)
         userRef.updateData([
-            "bookedEvents": FieldValue.arrayUnion([eventID])
+            "bookedEvents": updateAction
         ]) { error in
             if let error = error {
-                print("Error booking event: \(error.localizedDescription)")
+                print("Error updating event booking: \(error.localizedDescription)")
                 completion(false)
             } else {
-                // Update the local bookedEvents array
-                self.bookedEvents.append(eventID)
+                if shouldBook {
+                    self.bookedEvents.append(eventID)
+                } else {
+                    self.bookedEvents.removeAll { $0 == eventID }
+                }
                 completion(true)
             }
         }
     }
-
 }
 

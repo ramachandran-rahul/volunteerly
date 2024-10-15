@@ -20,7 +20,7 @@ class FirestoreService {
                 let userPreferences = document.get("preferences") as? [String] ?? []
                 
                 // Now fetch events that match the user's preferences
-                self.db.collection("events").whereField("category", in: userPreferences).getDocuments { (querySnapshot, error) in
+                self.db.collection("events").whereField("category", in: userPreferences).order(by: "startDate").getDocuments { (querySnapshot, error) in
                     if let error = error {
                         print("Error fetching events: \(error.localizedDescription)")
                         completion([]) // Return empty array on failure
