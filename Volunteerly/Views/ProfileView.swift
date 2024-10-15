@@ -11,16 +11,25 @@ import FirebaseAuth
 struct ProfileView: View {
     @ObservedObject var userSession: UserSession
     @EnvironmentObject var userViewModel: UserViewModel
+    @EnvironmentObject var eventsViewModel: EventsViewModel
+    
+    @State private var isEditPreferencesPresented = false
     
     let columns: [GridItem] = [GridItem(.adaptive(minimum: 150))]
     
     var body: some View {
         VStack {
-            Text("Volunteer Profile")
-                .font(.largeTitle)
-                .bold()
-                .padding(.vertical, 10)
-                .padding(.bottom, 10)
+            VStack(alignment: .leading) {
+                Text("Volunteer Profile")
+                    .font(.title)
+                    .bold()
+                    .padding(.bottom, 5)
+                Text("This page is all about you. Find out more about your preferences, your profile, and all your events.")
+                    .font(.body)
+                    .foregroundColor(.gray)
+            }
+            .padding(.vertical, 10)
+            .padding(.horizontal, 20)
             HStack(alignment: .top) {
                 VStack(alignment: .leading, spacing: 10) {
                     Text("\(FirebaseAuth.Auth.auth().currentUser?.displayName ?? "No Name")").font(.title2).fontWeight(.semibold)
@@ -56,9 +65,9 @@ struct ProfileView: View {
                 }
                 // Display user preferences dynamically
                 
-//                ["Environmental", "Social Impact", "Health & Safety", "Animal Welfare", "Sports"]
-                LazyVGrid(columns: columns, spacing: 15) {
-                    ForEach(userViewModel.preferences , id: \.self) { preference in
+                //                ["Environmental", "Social Impact", "Health & Safety", "Animal Welfare", "Sports"]
+                LazyVGrid(columns: columns, alignment: .leading, spacing: 15) {
+                    ForEach(userViewModel.preferences, id: \.self) { preference in
                         CategoryPillView(text: preference)
                     }
                     HStack {
@@ -73,9 +82,12 @@ struct ProfileView: View {
                     .cornerRadius(20)
                     .overlay(
                         RoundedRectangle(cornerRadius: 20)
-                            .stroke(Color.red, lineWidth: 1) // Border with rounded corners
+                            .stroke(Color.red, lineWidth: 1)
                     )
                     .fixedSize(horizontal: true, vertical: false)
+                    .onTapGesture {
+                        isEditPreferencesPresented.toggle()
+                    }
                 }
             }
             .padding(.horizontal, 20)
@@ -116,6 +128,10 @@ struct ProfileView: View {
                 }
             }
         }
+        .sheet(isPresented: $isEditPreferencesPresented) {
+            EditPreferencesView(userViewModel: userViewModel, isPresented: $isEditPreferencesPresented).environmentObject(eventsViewModel)
+        }
+
     }
 }
 

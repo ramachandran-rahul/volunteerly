@@ -24,12 +24,14 @@ class UserViewModel: ObservableObject {
             self.userID = currentUser.uid
             self.userName = currentUser.displayName ?? "No Name"
             self.email = currentUser.email ?? "No Email"
-            fetchUserData()
+            fetchUserData {
+                print("Data fetched successfully")
+            }
         }
     }
 
-    // Fetch user data from Firestore (preferences, booked events)
-    func fetchUserData() {
+    // Fetch user data from Firestore with completion handler
+    func fetchUserData(completion: @escaping () -> Void) {
         guard let userID = self.userID else { return }
 
         let userRef = Firestore.firestore().collection("users").document(userID)
@@ -43,6 +45,23 @@ class UserViewModel: ObservableObject {
             if let document = document, let data = document.data() {
                 self.bookedEvents = data["bookedEvents"] as? [String] ?? []
                 self.preferences = data["preferences"] as? [String] ?? []
+            }
+            completion()  // Call the completion handler after data fetch
+        }
+    }
+    
+    // Update preferences in Firestore with completion handler
+    func updatePreferences(_ newPreferences: [String], completion: @escaping () -> Void) {
+        guard let userID = self.userID else { return }
+
+        let userRef = Firestore.firestore().collection("users").document(userID)
+        userRef.updateData(["preferences": newPreferences]) { error in
+            if let error = error {
+                print("Error updating preferences: \(error.localizedDescription)")
+            } else {
+                // Update the local preferences after saving to Firestore
+                self.preferences = newPreferences
+                completion()  // Call the completion handler
             }
         }
     }

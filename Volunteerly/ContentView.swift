@@ -42,7 +42,9 @@ struct ContentView: View {
                 if userSession.isLoggedIn {
                     // If the user is logged in, load events and user data
                     contentViewModel.loadDataForLoggedInUser(eventsViewModel: eventsViewModel) {
-                        userViewModel.fetchUserData()
+                        userViewModel.fetchUserData {
+                            print ("User data loaded")
+                        }
                     }
                 } else {
                     // If the user is not logged in, show splash screen for 2 seconds then go to login

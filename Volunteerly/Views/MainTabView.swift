@@ -22,6 +22,7 @@ struct MainTabView: View {
                 .tabItem {
                     Label("Profile", systemImage: "person.circle")
                 }
+                .environmentObject(eventsViewModel)
         }
     }
 }

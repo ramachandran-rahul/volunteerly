@@ -19,9 +19,11 @@ struct OpportunitiesView: View {
                     .fontWeight(.semibold)
                     .padding(.vertical)
                 
-                Text("It's great to see you back!").padding(.bottom, 5)
-                
-                Text("Here are all the volunteering opportuntities we found for you!")
+                Text("It's great to see you back!")
+                    .font(.body)
+                    .foregroundColor(.gray)
+                Text("Here are all the volunteering opportuntities we found for you!")     .font(.body)
+                    .foregroundColor(.gray)
             }.padding()
             
             ScrollView {
@@ -33,6 +35,12 @@ struct OpportunitiesView: View {
                     }
                     .frame(maxWidth: .infinity)
                     .padding(.horizontal, 1)
+                }
+            }
+            .refreshable {
+                // Fetch events when the user pulls down to refresh
+                eventsViewModel.fetchEvents {
+                    // Handle completion if necessary
                 }
             }
         }
