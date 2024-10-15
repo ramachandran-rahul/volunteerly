@@ -10,6 +10,9 @@ import FirebaseAuth
 
 struct ProfileView: View {
     @ObservedObject var userSession: UserSession
+    @EnvironmentObject var userViewModel: UserViewModel
+    
+    let columns: [GridItem] = [GridItem(.adaptive(minimum: 150))]
     
     var body: some View {
         VStack {
@@ -22,52 +25,95 @@ struct ProfileView: View {
                 VStack(alignment: .leading, spacing: 10) {
                     Text("\(FirebaseAuth.Auth.auth().currentUser?.displayName ?? "No Name")").font(.title2).fontWeight(.semibold)
                     Text("\(FirebaseAuth.Auth.auth().currentUser?.email ?? "No Email")").font(.body).fontWeight(.semibold).padding(.bottom)
-                    Text("User Preferences:").font(.title3).fontWeight(.semibold)
-                    CategoryPillView(text: "Environmental")
                 }
                 
                 Spacer()
                 Button(action: userSession.logoutUser) {
-                HStack {
-                    Image(systemName: "ipad.and.arrow.forward")
-                        .foregroundColor(.red)
-                    Text("Logout")
-                        .foregroundColor(.red)
+                    HStack {
+                        Image(systemName: "ipad.and.arrow.forward")
+                            .foregroundColor(.red)
+                        Text("Logout")
+                            .foregroundColor(.red)
+                    }
+                    .padding(8)
+                    .padding(.horizontal)
+                    .background(Color.white)
+                    .overlay(
+                        RoundedRectangle(cornerRadius: 20)
+                            .stroke(Color.red, lineWidth: 1)
+                    )
+                    .padding(.top, 5)
                 }
-                .padding(8)
-                .padding(.horizontal)
-                .background(Color.white)
-                .overlay(
-                    RoundedRectangle(cornerRadius: 20)
-                        .stroke(Color.red, lineWidth: 1)
-                )
-                .padding(.top, 5)
             }
-                }
-            .padding(.bottom, 20)
-                .padding(.leading, 20)
-                .padding(.trailing, 10)
+            .padding(.bottom, 1)
+            .padding(.leading, 20)
+            .padding(.trailing, 10)
             
-            // Scrollable Events Section
-            ScrollView {
-                VStack(alignment: .leading) {
-                    Text("\(FirebaseAuth.Auth.auth().currentUser?.displayName ?? "No Name")'s Events")
-                        .font(.title2)
-                        .bold()
-                        .padding(.leading, 20)
-                    
-                    // Dummy event tiles
-                    VStack(spacing: 16) {
-                        ForEach(0..<5) { _ in
-//                            EventTileView()
+            VStack {
+                HStack {
+                    Text("User Preferences:").font(.title3).fontWeight(.semibold)
+                    Spacer()
+                }
+                // Display user preferences dynamically
+                
+//                ["Environmental", "Social Impact", "Health & Safety", "Animal Welfare", "Sports"]
+                LazyVGrid(columns: columns, spacing: 15) {
+                    ForEach(userViewModel.preferences , id: \.self) { preference in
+                        CategoryPillView(text: preference)
+                    }
+                    HStack {
+                        Image(systemName: "pencil")
+                        Text("Edit")
+                            .font(.subheadline)
+                    }
+                    .foregroundColor(.red)
+                    .padding(5)
+                    .padding(.horizontal)
+                    .background(Color.white)
+                    .cornerRadius(20)
+                    .overlay(
+                        RoundedRectangle(cornerRadius: 20)
+                            .stroke(Color.red, lineWidth: 1) // Border with rounded corners
+                    )
+                    .fixedSize(horizontal: true, vertical: false)
+                }
+            }
+            .padding(.horizontal, 20)
+            .padding(.bottom, 20)
+            
+            ZStack {
+                LinearGradient(gradient: Gradient(colors: [Color(red: 0.78, green: 0.86, blue: 0.88), Color(red: 0.78, green: 0.86, blue: 0.81)]),
+                               startPoint: .top, endPoint: .bottom)
+                .ignoresSafeArea()
+                
+                // Scrollable Events Section
+                ScrollView {
+                    VStack(alignment: .leading) {
+                        Text("\(FirebaseAuth.Auth.auth().currentUser?.displayName ?? "No Name")'s Events")
+                            .font(.title2)
+                            .bold()
+                            .padding(.leading, 20)
+                        
+                        if userViewModel.bookedEvents.isEmpty {
+                            HStack {
+                                Spacer()
+                                Text("No events found.")
+                                    .foregroundColor(.gray)
+                                    .padding(.top, 20)
+                                Spacer()
+                            }
+                        } else {
+                            VStack(spacing: 16) {
+                                ForEach(userViewModel.bookedEvents, id: \.self) { eventID in
+                                    Text("Event ID: \(eventID)")
+                                }
+                            }
+                            .frame(maxWidth: .infinity)
+                            .padding(.horizontal, 1)
                         }
                     }
-                    .frame(maxWidth: .infinity)
-                    .padding(.horizontal, 1)
+                    .padding(.vertical)
                 }
-                .padding(.vertical)
-                .background(LinearGradient(gradient: Gradient(colors: [Color(red: 0.78, green: 0.86, blue: 0.88), Color(red: 0.78, green: 0.86, blue: 0.81)]),
-                                           startPoint: .top, endPoint: .bottom)) // Slightly darker background for event section
             }
         }
     }
@@ -76,5 +122,6 @@ struct ProfileView: View {
 struct ProfileView_Previews: PreviewProvider {
     static var previews: some View {
         ProfileView(userSession: UserSession())
+            .environmentObject(UserViewModel())
     }
 }

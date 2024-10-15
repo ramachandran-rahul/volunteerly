@@ -12,6 +12,7 @@ struct ContentView: View {
     @StateObject var contentViewModel = ContentViewModel()
     @StateObject var userSession = UserSession()
     @StateObject var eventsViewModel = EventsViewModel()
+    @StateObject var userViewModel = UserViewModel()
     
     var body: some View {
         ZStack {
@@ -27,6 +28,7 @@ struct ContentView: View {
                 if userSession.isLoggedIn && contentViewModel.isDataLoaded {
                     // Show the main app content
                     MainTabView(userSession: userSession)
+                        .environmentObject(userViewModel)
                         .environmentObject(eventsViewModel)
                 } else {
                     // Show the login screen
@@ -40,7 +42,7 @@ struct ContentView: View {
                 if userSession.isLoggedIn {
                     // If the user is logged in, load events and user data
                     contentViewModel.loadDataForLoggedInUser(eventsViewModel: eventsViewModel) {
-                        // Completion handler for future extensibility
+                        userViewModel.fetchUserData()
                     }
                 } else {
                     // If the user is not logged in, show splash screen for 2 seconds then go to login
