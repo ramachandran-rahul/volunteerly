@@ -23,4 +23,9 @@ class EventsViewModel: ObservableObject {
             }
         }
     }
+    
+    // Get an event by its ID
+    func getEvent(by eventID: String) -> Event? {
+        return events.first { $0.id == eventID }
+    }
 }

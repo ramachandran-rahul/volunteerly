@@ -115,9 +115,15 @@ struct ProfileView: View {
                                 Spacer()
                             }
                         } else {
+                            // Display EventTiles for the booked events
                             VStack(spacing: 16) {
                                 ForEach(userViewModel.bookedEvents, id: \.self) { eventID in
-                                    Text("Event ID: \(eventID)")
+                                    if let event = eventsViewModel.getEvent(by: eventID) {
+                                        EventTileView(event: event)
+                                    } else {
+                                        Text("Loading event details...")
+                                            .foregroundColor(.gray)
+                                    }
                                 }
                             }
                             .frame(maxWidth: .infinity)
