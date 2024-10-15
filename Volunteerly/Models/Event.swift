@@ -12,7 +12,7 @@ struct Event: Identifiable, Codable {
     @DocumentID var id: String?  // The document ID from Firestore
     var title: String
     var organisation: String
-    var coordinates: GeoPoint  // Use Firebase's GeoPoint for coordinates
+    var coordinates: GeoPoint
     var startDate: Date
     var endDate: Date
     var description: String

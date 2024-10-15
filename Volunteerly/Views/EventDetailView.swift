@@ -12,6 +12,7 @@ import FirebaseFirestore
 struct EventDetailView: View {
     @State var showSignUpConfirmation: Bool = false
     var event: Event
+    @EnvironmentObject var userViewModel: UserViewModel
 
     // Remove static mapRegion initialization and use a state for MapCameraPosition
     @State private var cameraPosition: MapCameraPosition = .automatic
@@ -75,7 +76,18 @@ struct EventDetailView: View {
                         title: Text("Confirm Sign-Up"),
                         message: Text("Are you sure you want to sign up for this event?"),
                         primaryButton: .default(Text("Yes"), action: {
+                            guard let eventID = event.id else {
+                                print("Invalid event ID")
+                                return
+                            }
                             
+                            userViewModel.bookEvent(eventID: eventID) { success in
+                                if success {
+                                    print("Event successfully booked!")
+                                } else {
+                                    print("Failed to book event.")
+                                }
+                            }
                         }),
                         secondaryButton: .cancel()
                     )

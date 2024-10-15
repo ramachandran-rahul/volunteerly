@@ -65,5 +65,27 @@ class UserViewModel: ObservableObject {
             }
         }
     }
+    
+    // Add event booking into user's document
+    func bookEvent(eventID: String, completion: @escaping (Bool) -> Void) {
+        guard let userID = self.userID else { return }
+
+        let userRef = Firestore.firestore().collection("users").document(userID)
+
+        // Add the event ID to the user's bookedEvents array
+        userRef.updateData([
+            "bookedEvents": FieldValue.arrayUnion([eventID])
+        ]) { error in
+            if let error = error {
+                print("Error booking event: \(error.localizedDescription)")
+                completion(false)
+            } else {
+                // Update the local bookedEvents array
+                self.bookedEvents.append(eventID)
+                completion(true)
+            }
+        }
+    }
+
 }
 
