@@ -110,7 +110,7 @@ struct ProfileView: View {
                         if userViewModel.bookedEvents.isEmpty {
                             HStack {
                                 Spacer()
-                                Text("No events found.")
+                                Text("You have not volunteered at any events yet. Please go to the opportunities view and find some opportunities to volunteer!")
                                     .foregroundColor(.gray)
                                     .padding(.top, 20)
                                 Spacer()
