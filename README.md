@@ -1,6 +1,6 @@
 # Volunteerly
 
-**Volunteerly** is a Swift-based iOS application designed to help users discover and participate in volunteering opportunities based on their personal preferences. It offers a seamless way for users to explore volunteering events, manage their profiles, track booked events, and customize their preferences. The app leverages **Firebase** for user authentication and event data storage.
+**Volunteerly** is a Swift-based iOS application designed to help users discover and participate in volunteering opportunities based on their personal preferences. It offers a seamless way for users to explore volunteering events, manage their profiles, track booked events, and customize their preferences across multiple devices via the cloud. The app leverages **Firebase** for user authentication and event data storage.
 
 ---
 
@@ -24,7 +24,6 @@
 
 ### 3. Event Discovery
 - **Opportunities View**: Browse volunteering events based on selected preferences.
-- **Search Bar**: Filter events in real-time by typing keywords like title or organization.
 - **Event Details**: Each event displays:
   - Title
   - Organization
