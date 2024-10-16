@@ -105,7 +105,7 @@ struct LoginView: View {
 struct LoginView_Previews: PreviewProvider {
     static var previews: some View {
         NavigationView {
-            LoginView(userSession: UserSession(), loginViewModel: LoginViewModel(contentViewModel: ContentViewModel(), eventsViewModel: EventsViewModel()))
+            LoginView(userSession: UserSession(userViewModel: UserViewModel(), eventsViewModel: EventsViewModel()), loginViewModel: LoginViewModel(contentViewModel: ContentViewModel(), eventsViewModel: EventsViewModel()))
         }
     }
 }

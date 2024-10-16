@@ -11,8 +11,12 @@ import SwiftUI
 
 class UserSession: ObservableObject {
     @Published var isLoggedIn: Bool = false
-
-    init() {
+    private var userViewModel: UserViewModel
+    private var eventsViewModel: EventsViewModel
+    
+    init(userViewModel: UserViewModel, eventsViewModel: EventsViewModel) {
+        self.userViewModel = userViewModel
+        self.eventsViewModel = eventsViewModel
         checkIfUserIsLoggedIn()
     }
 
@@ -25,8 +29,9 @@ class UserSession: ObservableObject {
                     // User does not exist or there was an error, log out the user
                     self.logoutUser()
                 } else {
-                    // User is valid and authenticated
-                    self.isLoggedIn = true
+                            // User is valid and authenticated
+                            self.isLoggedIn = true
+
                 }
                 completion() // Call completion handler to continue the app flow
             }
@@ -48,7 +53,7 @@ class UserSession: ObservableObject {
             if let error = error {
                 completion(self.handleFirebaseAuthError(error))
             } else {
-                self.isLoggedIn = true
+                        self.isLoggedIn = true
                 completion(nil)
             }
         }
@@ -59,6 +64,10 @@ class UserSession: ObservableObject {
         do {
             try Auth.auth().signOut()
             isLoggedIn = false
+            
+            // Clear user-specific data after logout
+            userViewModel.clearUserData() // Clears preferences, booked events, etc.
+            eventsViewModel.clearEventsData() // Clears events list
         } catch let signOutError as NSError {
             print("Error signing out: %@", signOutError)
         }

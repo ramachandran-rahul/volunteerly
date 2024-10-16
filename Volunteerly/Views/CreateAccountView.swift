@@ -167,6 +167,6 @@ struct CreateAccountView: View {
 
 struct CreateAccountView_Previews: PreviewProvider {
     static var previews: some View {
-        CreateAccountView(userSession: UserSession())
+        CreateAccountView(userSession: UserSession(userViewModel: UserViewModel(), eventsViewModel: EventsViewModel()))
     }
 }

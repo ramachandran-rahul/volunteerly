@@ -22,26 +22,51 @@ struct OpportunitiesView: View {
                 Text("It's great to see you back!")
                     .font(.body)
                     .foregroundColor(.gray)
-                Text("Here are all the volunteering opportuntities we found for you!")     .font(.body)
-                    .foregroundColor(.gray)
+                if eventsViewModel.events.isEmpty {
+                    // Display message when there are no events
+                    VStack {
+                        Text("Unfortunately, we have no opportunities that match your currently selected preferences.")
+                        Text("Please update your preferences in the profile section.").padding(.top)
+                        Spacer()
+                    }
+                        .font(.body)
+                        .foregroundColor(.gray)
+                        .multilineTextAlignment(.center)
+                        .padding(.horizontal)
+                        .padding(.top, 200) // Add padding to center the message
+                } else {
+                    // Default message when there are events
+                    Text("Here are all the volunteering opportunities we found for you!")
+                        .font(.body)
+                        .foregroundColor(.gray)
+                }
+
             }.padding()
             
-            ScrollView {
-                VStack(alignment: .leading) {
-                    VStack(spacing: 16) {
-                        ForEach(eventsViewModel.events) { event in
-                            EventTileView(event: event)
+            if !eventsViewModel.events.isEmpty {
+                ScrollView {
+                    VStack(alignment: .leading) {
+                        VStack(spacing: 16) {
+                            ForEach(eventsViewModel.events) { event in
+                                EventTileView(event: event)
+                            }
                         }
+                        .frame(maxWidth: .infinity)
+                        .padding(.horizontal, 1)
                     }
-                    .frame(maxWidth: .infinity)
-                    .padding(.horizontal, 1)
+                }
+                .refreshable {
+                    // Fetch events when the user pulls down to refresh
+                    eventsViewModel.fetchEvents {
+                        // Handle completion if necessary
+                    }
                 }
             }
-            .refreshable {
-                // Fetch events when the user pulls down to refresh
-                eventsViewModel.fetchEvents {
-                    // Handle completion if necessary
-                }
+        }
+        .onAppear {
+            // Fetch events when the view appears
+            eventsViewModel.fetchEvents {
+                // Handle completion if necessary
             }
         }
     }

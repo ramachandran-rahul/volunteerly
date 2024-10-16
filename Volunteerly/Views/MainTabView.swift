@@ -44,6 +44,6 @@ struct MainTabView: View {
 }
 
 #Preview {
-    MainTabView(userSession: UserSession())
+    MainTabView(userSession: UserSession(userViewModel: UserViewModel(), eventsViewModel: EventsViewModel()))
         .environmentObject(EventsViewModel())
 }

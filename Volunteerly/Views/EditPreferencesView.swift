@@ -86,7 +86,7 @@ struct EditPreferencesView: View {
         userViewModel.updatePreferences(selectedPreferences) {
             userViewModel.fetchUserData {
                 // Trigger a refetch in EventsViewModel after preferences are updated
-                eventsViewModel.fetchEvents {
+                eventsViewModel.fetchBookedEvents(bookedEventIDs: userViewModel.bookedEvents) {
                     // Dismiss the sheet after preferences are saved and data is fetched
                     isPresented = false
                 }

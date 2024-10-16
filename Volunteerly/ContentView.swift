@@ -10,7 +10,7 @@ import FirebaseAuth
 
 struct ContentView: View {
     @StateObject var contentViewModel = ContentViewModel()
-    @StateObject var userSession = UserSession()
+    @EnvironmentObject var userSession: UserSession
     @StateObject var eventsViewModel = EventsViewModel()
     @StateObject var userViewModel = UserViewModel()
     
@@ -41,9 +41,9 @@ struct ContentView: View {
             userSession.checkIfUserIsLoggedIn {
                 if userSession.isLoggedIn {
                     // If the user is logged in, load events and user data
-                    contentViewModel.loadDataForLoggedInUser(eventsViewModel: eventsViewModel) {
-                        userViewModel.fetchUserData {
-                            print ("User data loaded")
+                    userViewModel.fetchUserData {
+                        print ("User data loaded")
+                        contentViewModel.loadDataForLoggedInUser(eventsViewModel: eventsViewModel) {
                         }
                     }
                 } else {

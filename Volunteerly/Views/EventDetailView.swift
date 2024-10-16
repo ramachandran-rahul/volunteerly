@@ -68,7 +68,7 @@ struct EventDetailView: View {
                         }
                         .padding(.top, 50)
                     }
-                }.frame(height: 350)
+                }.frame(height: 300)
                 
                 // Show the button based on whether the user has booked the event
                 if userViewModel.bookedEvents.contains(event.id ?? "") {

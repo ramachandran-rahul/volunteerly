@@ -11,8 +11,8 @@ import FirebaseAuth
 import FirebaseFirestore
 
 class UserViewModel: ObservableObject {
-    @Published var bookedEvents: [String] = []   // Array of booked event IDs
-    @Published var preferences: [String] = []    // Array of preferences
+    @Published var bookedEvents: [String] = []
+    @Published var preferences: [String] = []
     @Published var userName: String = ""
     @Published var email: String = ""
 
@@ -52,7 +52,10 @@ class UserViewModel: ObservableObject {
     
     // Update preferences in Firestore with completion handler
     func updatePreferences(_ newPreferences: [String], completion: @escaping () -> Void) {
-        guard let userID = self.userID else { return }
+        guard let userID = Auth.auth().currentUser?.uid else {
+            print("Error: No authenticated user found.")
+            return
+        }
 
         let userRef = Firestore.firestore().collection("users").document(userID)
         userRef.updateData(["preferences": newPreferences]) { error in
@@ -68,7 +71,11 @@ class UserViewModel: ObservableObject {
     
     // Update user's event booking status
     func updateEventBooking(eventID: String, shouldBook: Bool, completion: @escaping (Bool) -> Void) {
-        guard let userID = self.userID else { return }
+        guard let userID = Auth.auth().currentUser?.uid, !eventID.isEmpty else {
+            print("Error: No authenticated user found or invalid event ID.")
+            completion(false)
+            return
+        }
 
         let userRef = Firestore.firestore().collection("users").document(userID)
         
@@ -78,18 +85,28 @@ class UserViewModel: ObservableObject {
         userRef.updateData([
             "bookedEvents": updateAction
         ]) { error in
-            if let error = error {
-                print("Error updating event booking: \(error.localizedDescription)")
-                completion(false)
-            } else {
+            DispatchQueue.main.async {
                 if shouldBook {
-                    self.bookedEvents.append(eventID)
+                    // Prevent duplicate entries in bookedEvents
+                    if !self.bookedEvents.contains(eventID) {
+                        self.bookedEvents.append(eventID)
+                    }
                 } else {
+                    // Remove the event from bookedEvents
                     self.bookedEvents.removeAll { $0 == eventID }
                 }
                 completion(true)
             }
         }
+    }
+    
+    // Called on logout
+    func clearUserData() {
+        self.bookedEvents = []
+        self.preferences = []
+        self.userName = ""
+        self.email = ""
+        self.userID = nil
     }
 }
 

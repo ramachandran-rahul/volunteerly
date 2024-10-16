@@ -121,10 +121,11 @@ struct ProfileView: View {
                                 ForEach(userViewModel.bookedEvents, id: \.self) { eventID in
                                     if let event = eventsViewModel.getEvent(by: eventID) {
                                         EventTileView(event: event)
-                                    } else {
-                                        Text("Loading event details...")
-                                            .foregroundColor(.gray)
                                     }
+                                }
+                                if (userViewModel.bookedEvents.count < 1) {
+                                    Text("You have not registered for any events.")
+                                        .foregroundColor(.gray).padding(.top, 20)
                                 }
                             }
                             .frame(maxWidth: .infinity)
@@ -135,8 +136,9 @@ struct ProfileView: View {
                 }
                 .refreshable {
                     // Fetch the latest events or user data when the user performs a pull-to-refresh action
-                    eventsViewModel.fetchEvents {
-                        print("Events refreshed")
+                    // Fetch booked events instead of regular events
+                    eventsViewModel.fetchBookedEvents(bookedEventIDs: userViewModel.bookedEvents) {
+                        print("Booked events refreshed")
                     }
                     userViewModel.fetchUserData {
                         print("User data refreshed")
@@ -147,13 +149,18 @@ struct ProfileView: View {
         .sheet(isPresented: $isEditPreferencesPresented) {
             EditPreferencesView(userViewModel: userViewModel, isPresented: $isEditPreferencesPresented).environmentObject(eventsViewModel)
         }
-
+        .onAppear {
+            // Fetch the user's booked events when the profile view appears
+            eventsViewModel.fetchBookedEvents(bookedEventIDs: userViewModel.bookedEvents) {
+                print("Booked events loaded")
+            }
+        }
     }
 }
 
 struct ProfileView_Previews: PreviewProvider {
     static var previews: some View {
-        ProfileView(userSession: UserSession())
+        ProfileView(userSession: UserSession(userViewModel: UserViewModel(), eventsViewModel: EventsViewModel()))
             .environmentObject(UserViewModel())
     }
 }

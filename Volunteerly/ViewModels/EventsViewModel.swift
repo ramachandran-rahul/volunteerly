@@ -24,8 +24,22 @@ class EventsViewModel: ObservableObject {
         }
     }
     
+    // Fetch events the user is booked for, including past and out-of-preference events
+    func fetchBookedEvents(bookedEventIDs: [String], completion: @escaping () -> Void) {
+        firestoreService.fetchEventsByIDs(eventIDs: bookedEventIDs) { [weak self] fetchedEvents in
+            DispatchQueue.main.async {
+                self?.events = fetchedEvents
+                completion()  // Notify completion
+            }
+        }
+    }
+    
     // Get an event by its ID
     func getEvent(by eventID: String) -> Event? {
         return events.first { $0.id == eventID }
+    }
+    
+    func clearEventsData() {
+        self.events = []
     }
 }

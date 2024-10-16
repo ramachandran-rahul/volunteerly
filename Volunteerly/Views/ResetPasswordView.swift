@@ -85,6 +85,6 @@ struct ResetPasswordView: View {
 
 struct ResetPasswordView_Previews: PreviewProvider {
     static var previews: some View {
-        ResetPasswordView(userSession: UserSession())
+        ResetPasswordView(userSession: UserSession(userViewModel: UserViewModel(), eventsViewModel: EventsViewModel()))
     }
 }
