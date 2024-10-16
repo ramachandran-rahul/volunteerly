@@ -9,7 +9,7 @@ import Foundation
 import FirebaseFirestore
 
 struct Event: Identifiable, Codable {
-    @DocumentID var id: String?  // The document ID from Firestore
+    @DocumentID var id: String?
     var title: String
     var organisation: String
     var coordinates: GeoPoint

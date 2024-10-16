@@ -63,9 +63,6 @@ struct ProfileView: View {
                     Text("User Preferences:").font(.title3).fontWeight(.semibold)
                     Spacer()
                 }
-                // Display user preferences dynamically
-                
-                //                ["Environmental", "Social Impact", "Health & Safety", "Animal Welfare", "Sports"]
                 LazyVGrid(columns: columns, alignment: .leading, spacing: 15) {
                     ForEach(userViewModel.preferences, id: \.self) { preference in
                         CategoryPillView(text: preference)
@@ -99,7 +96,6 @@ struct ProfileView: View {
                                startPoint: .top, endPoint: .bottom)
                 .ignoresSafeArea()
                 
-                // Scrollable Events Section
                 ScrollView {
                     VStack(alignment: .leading) {
                         Text("\(FirebaseAuth.Auth.auth().currentUser?.displayName ?? "No Name")'s Events")
@@ -116,7 +112,6 @@ struct ProfileView: View {
                                 Spacer()
                             }
                         } else {
-                            // Display EventTiles for the booked events
                             VStack(spacing: 16) {
                                 ForEach(userViewModel.bookedEvents, id: \.self) { eventID in
                                     if let event = eventsViewModel.getEvent(by: eventID) {

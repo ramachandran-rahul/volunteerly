@@ -29,18 +29,17 @@ struct OpportunitiesView: View {
                         Text("Please update your preferences in the profile section.").padding(.top)
                         Spacer()
                     }
-                        .font(.body)
-                        .foregroundColor(.gray)
-                        .multilineTextAlignment(.center)
-                        .padding(.horizontal)
-                        .padding(.top, 200) // Add padding to center the message
+                    .font(.body)
+                    .foregroundColor(.gray)
+                    .multilineTextAlignment(.center)
+                    .padding(.horizontal)
+                    .padding(.top, 200)
                 } else {
-                    // Default message when there are events
                     Text("Here are all the volunteering opportunities we found for you!")
                         .font(.body)
                         .foregroundColor(.gray)
                 }
-
+                
             }.padding()
             
             if !eventsViewModel.events.isEmpty {

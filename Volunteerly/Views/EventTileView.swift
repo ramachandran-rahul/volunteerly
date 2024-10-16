@@ -14,21 +14,21 @@ struct EventTileView: View {
     @State private var showEventDetail = false
     
     // Computed properties to check the event status based on the current date
-        private var currentDate: Date {
-            return Date()
-        }
-        
-        private var isEventBooked: Bool {
-            return userViewModel.bookedEvents.contains(event.id ?? "")
-        }
-        
-        private var isOngoing: Bool {
-            return currentDate >= event.startDate && currentDate <= event.endDate
-        }
-        
-        private var isCompleted: Bool {
-            return currentDate > event.endDate
-        }
+    private var currentDate: Date {
+        return Date()
+    }
+    
+    private var isEventBooked: Bool {
+        return userViewModel.bookedEvents.contains(event.id ?? "")
+    }
+    
+    private var isOngoing: Bool {
+        return currentDate >= event.startDate && currentDate <= event.endDate
+    }
+    
+    private var isCompleted: Bool {
+        return currentDate > event.endDate
+    }
     
     var body: some View {
         VStack(alignment: .leading, spacing: 5) {
@@ -39,7 +39,7 @@ struct EventTileView: View {
                     .lineLimit(1)
                     .truncationMode(.tail)
                 
-                    Spacer()
+                Spacer()
                 
                 // Show status based on event dates and booking
                 if isEventBooked {

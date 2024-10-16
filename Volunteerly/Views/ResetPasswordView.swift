@@ -17,20 +17,19 @@ struct ResetPasswordView: View {
     var isFormValid: Bool {
         return userSession.isValidEmail(email)
     }
-
-
+    
     var body: some View {
         VStack(spacing: 30) {
             Text("Reset Password")
                 .font(.largeTitle)
                 .fontWeight(.bold)
                 .padding(.bottom, 5)
-
+            
             VStack(spacing: 5) {
                 TextField("Email", text: $email)
                     .autocapitalization(.none)
                     .customTextFieldStyle(iconName: "envelope")
-
+                
                 if let errorMessage = errorMessage {
                     Text(errorMessage)
                         .font(.caption)
@@ -39,7 +38,7 @@ struct ResetPasswordView: View {
                         .padding(.top, 2)
                         .frame(maxWidth: .infinity, alignment: .leading)
                 }
-
+                
                 if let successMessage = successMessage {
                     HStack {
                         Image(systemName: "checkmark.circle")
@@ -55,7 +54,7 @@ struct ResetPasswordView: View {
                     .frame(maxWidth: .infinity, alignment: .center)
                 }
             }
-
+            
             Button(action: {
                 userSession.resetPassword(email: email) { errorMessage in
                     if let errorMessage = errorMessage {

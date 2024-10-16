@@ -12,16 +12,16 @@ import FirebaseFirestore
 struct EventDetailView: View {
     @State var showSignUpConfirmation: Bool = false
     @State var showBackOutConfirmation: Bool = false
+    @State private var showShareSheet: Bool = false
     var event: Event
     @EnvironmentObject var userViewModel: UserViewModel
-
-    // Remove static mapRegion initialization and use a state for MapCameraPosition
+    
     @State private var cameraPosition: MapCameraPosition = .automatic
-
+    
     var body: some View {
         ScrollView {
             VStack {
-                // Map with a marker on the event's location using the latest SwiftUI Map API
+                // Map with a marker on the event's location
                 Map(position: $cameraPosition) {
                     Marker(event.title, coordinate: CLLocationCoordinate2D(latitude: event.coordinates.latitude, longitude: event.coordinates.longitude))
                 }
@@ -33,17 +33,42 @@ struct EventDetailView: View {
                         span: MKCoordinateSpan(latitudeDelta: 0.05, longitudeDelta: 0.05)
                     ))
                 }
-
-                // Event details (below the map)
+                
+                // Event details
                 HStack {
                     Text(event.title)
                         .font(.title)
                         .bold()
                     Spacer()
-                    CategoryPillView(text: event.category)
+                    VStack {
+                        CategoryPillView(text: event.category)
+                        // Share Button
+                        Button(action: {
+                            showShareSheet = true // Trigger the share sheet
+                        }) {
+                            HStack {
+                                Image(systemName: "square.and.arrow.up")
+                                Text("Share Event").font(.subheadline)
+                            }
+                            .font(.subheadline)
+                            .foregroundColor(.blue)
+                            .padding(5)
+                            .padding(.horizontal)
+                            .background(Color.white)
+                            .cornerRadius(20)
+                            .overlay(
+                                RoundedRectangle(cornerRadius: 20)
+                                    .stroke(Color.blue, lineWidth: 1)
+                            )
+                            .cornerRadius(20)
+                        }
+                        .sheet(isPresented: $showShareSheet) {
+                            ShareSheet(activityItems: [shareText()]) // Pass the share content
+                        }
+                    }
                 }
                 .padding()
-
+                
                 ScrollView {
                     VStack(alignment: .leading, spacing: 30) {
                         Text("**Organization**: \(event.organisation)")
@@ -147,9 +172,29 @@ struct EventDetailView: View {
             }
         }
     }
+    
+    // Shareable content for the share sheet
+    private func shareText() -> String {
+        return """
+        Check out this volunteering event!
+        Title: \(event.title)
+        Organization: \(event.organisation)
+        Dates: \(event.startDate.formatted()) - \(event.endDate.formatted())
+        """
+    }
 }
 
-// Example preview
+// ShareSheet View
+struct ShareSheet: UIViewControllerRepresentable {
+    var activityItems: [Any]
+    
+    func makeUIViewController(context: Context) -> UIActivityViewController {
+        return UIActivityViewController(activityItems: activityItems, applicationActivities: nil)
+    }
+    
+    func updateUIViewController(_ uiViewController: UIActivityViewController, context: Context) {}
+}
+
 #Preview {
     EventDetailView(event: Event(title: "Beach Cleanup", organisation: "Ocean Care", coordinates: GeoPoint(latitude: -33.8688, longitude: 151.2093), startDate: Date(), endDate: Date(), description: "Help clean up the beach", category: "Environmental", contactEmail: "contact@oceancare.org"))
 }

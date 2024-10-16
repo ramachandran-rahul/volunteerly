@@ -9,8 +9,8 @@ import Foundation
 import SwiftUI
 
 struct CustomTextFieldModifier: ViewModifier {
-    var iconName: String  // Icon to be displayed in the text field
-
+    var iconName: String
+    
     func body(content: Content) -> some View {
         content
             .padding(.leading, 40)

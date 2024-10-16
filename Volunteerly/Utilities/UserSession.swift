@@ -19,7 +19,7 @@ class UserSession: ObservableObject {
         self.eventsViewModel = eventsViewModel
         checkIfUserIsLoggedIn()
     }
-
+    
     // Check if a user is already logged in and validate user status
     func checkIfUserIsLoggedIn(completion: @escaping () -> Void = {}) {
         if let user = Auth.auth().currentUser {
@@ -29,36 +29,36 @@ class UserSession: ObservableObject {
                     // User does not exist or there was an error, log out the user
                     self.logoutUser()
                 } else {
-                            // User is valid and authenticated
-                            self.isLoggedIn = true
-
+                    // User is valid and authenticated
+                    self.isLoggedIn = true
+                    
                 }
-                completion() // Call completion handler to continue the app flow
+                completion()
             }
         } else {
             // No user is logged in
             isLoggedIn = false
-            completion() // Call completion handler to continue the app flow
+            completion()
         }
     }
-
+    
     // Handle user login
     func loginUser(email: String, password: String, completion: @escaping (String?) -> Void) {
         guard isValidEmail(email) else {
             completion("Please enter a valid email address.")
             return
         }
-
+        
         Auth.auth().signIn(withEmail: email, password: password) { authResult, error in
             if let error = error {
                 completion(self.handleFirebaseAuthError(error))
             } else {
-                        self.isLoggedIn = true
+                self.isLoggedIn = true
                 completion(nil)
             }
         }
     }
-
+    
     // Handle user logout
     func logoutUser() {
         do {
@@ -72,7 +72,7 @@ class UserSession: ObservableObject {
             print("Error signing out: %@", signOutError)
         }
     }
-
+    
     // Handle user creation with password validation
     func createUser(name: String, email: String, password: String, confirmPassword: String, completion: @escaping (String?) -> Void) {
         guard isValidEmail(email) else {
@@ -84,12 +84,12 @@ class UserSession: ObservableObject {
             completion("Passwords do not match.")
             return
         }
-
+        
         guard isValidPassword(password) else {
             completion("Password must be at least 8 characters long.")
             return
         }
-
+        
         Auth.auth().createUser(withEmail: email, password: password) { authResult, error in
             if let error = error {
                 completion(self.handleFirebaseAuthError(error))
@@ -106,14 +106,14 @@ class UserSession: ObservableObject {
             }
         }
     }
-
+    
     // Handle password reset
     func resetPassword(email: String, completion: @escaping (String?) -> Void) {
         guard isValidEmail(email) else {
             completion("Please enter a valid email address.")
             return
         }
-
+        
         Auth.auth().sendPasswordReset(withEmail: email) { error in
             if let error = error {
                 completion(self.handleFirebaseAuthError(error))
@@ -122,19 +122,19 @@ class UserSession: ObservableObject {
             }
         }
     }
-
+    
     // Validate email format
     func isValidEmail(_ email: String) -> Bool {
         let emailFormat = "[A-Z0-9a-z._%+-]+@[A-Za-z0-9.-]+\\.[A-Za-z]{2,64}"
         let emailPredicate = NSPredicate(format: "SELF MATCHES %@", emailFormat)
         return emailPredicate.evaluate(with: email)
     }
-
+    
     // Validate password format
     func isValidPassword(_ password: String) -> Bool {
         return password.count >= 8
     }
-
+    
     // Error handling for Firebase Authentication errors
     private func handleFirebaseAuthError(_ error: Error) -> String {
         let errorCode = AuthErrorCode(rawValue: error._code)

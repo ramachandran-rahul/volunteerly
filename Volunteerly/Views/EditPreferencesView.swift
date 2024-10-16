@@ -17,7 +17,6 @@ struct EditPreferencesView: View {
         NavigationView {
             VStack {
                 VStack(alignment: .leading, spacing: 20) {
-                    // Heading and guiding text
                     Text("Update Preferences")
                         .font(.title)
                         .bold()
@@ -28,7 +27,6 @@ struct EditPreferencesView: View {
                         .foregroundColor(.gray)
                     
                     ScrollView {
-                        // Preferences section using VStack and HStack
                         VStack(alignment: .leading, spacing: 15) {
                             ForEach(Constants.categories, id: \.self) { preference in
                                 HStack {
@@ -79,7 +77,7 @@ struct EditPreferencesView: View {
             selectedPreferences.append(preference)
         }
     }
-
+    
     // Function to save the preferences
     private func savePreferences() {
         // Update the user preferences in Firebase

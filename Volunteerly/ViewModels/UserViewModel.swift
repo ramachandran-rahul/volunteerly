@@ -15,9 +15,9 @@ class UserViewModel: ObservableObject {
     @Published var preferences: [String] = []
     @Published var userName: String = ""
     @Published var email: String = ""
-
+    
     private var userID: String?
-
+    
     init() {
         // Check if the user is already logged in
         if let currentUser = FirebaseAuth.Auth.auth().currentUser {
@@ -29,19 +29,19 @@ class UserViewModel: ObservableObject {
             }
         }
     }
-
+    
     // Fetch user data from Firestore with completion handler
     func fetchUserData(completion: @escaping () -> Void) {
         guard let userID = self.userID else { return }
-
+        
         let userRef = Firestore.firestore().collection("users").document(userID)
-
+        
         userRef.getDocument { document, error in
             if let error = error {
                 print("Error fetching user data: \(error.localizedDescription)")
                 return
             }
-
+            
             if let document = document, let data = document.data() {
                 self.bookedEvents = data["bookedEvents"] as? [String] ?? []
                 self.preferences = data["preferences"] as? [String] ?? []
@@ -56,7 +56,7 @@ class UserViewModel: ObservableObject {
             print("Error: No authenticated user found.")
             return
         }
-
+        
         let userRef = Firestore.firestore().collection("users").document(userID)
         userRef.updateData(["preferences": newPreferences]) { error in
             if let error = error {
@@ -76,11 +76,11 @@ class UserViewModel: ObservableObject {
             completion(false)
             return
         }
-
+        
         let userRef = Firestore.firestore().collection("users").document(userID)
         
         let updateAction: FieldValue = shouldBook ? .arrayUnion([eventID]) : .arrayRemove([eventID])
-
+        
         // Update the user's bookedEvents array based on shouldBook (add or remove)
         userRef.updateData([
             "bookedEvents": updateAction

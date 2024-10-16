@@ -23,16 +23,16 @@ struct CreateAccountView: View {
     
     @Environment(\.presentationMode) var presentationMode
     @ObservedObject var userSession: UserSession
-
+    
     // Real-time form validation
     var isFormValid: Bool {
         return nameErrorMessage == nil &&
-               emailErrorMessage == nil &&
-               passwordErrorMessage == nil &&
-               confirmPasswordErrorMessage == nil &&
-               !name.isEmpty && !email.isEmpty && !password.isEmpty && !confirmPassword.isEmpty
+        emailErrorMessage == nil &&
+        passwordErrorMessage == nil &&
+        confirmPasswordErrorMessage == nil &&
+        !name.isEmpty && !email.isEmpty && !password.isEmpty && !confirmPassword.isEmpty
     }
-
+    
     var body: some View {
         VStack(spacing: 50) {
             Text("Create Account")
@@ -52,7 +52,7 @@ struct CreateAccountView: View {
                         .frame(maxWidth: .infinity, alignment: .leading)
                         .padding(.horizontal)
                 }
-
+                
                 // Email Field
                 VStack(alignment: .leading, spacing: 5) {
                     TextField("Email", text: $email)
@@ -66,7 +66,7 @@ struct CreateAccountView: View {
                         .frame(maxWidth: .infinity, alignment: .leading)
                         .padding(.horizontal)
                 }
-
+                
                 // Password Field
                 VStack(alignment: .leading, spacing: 5) {
                     SecureField("Password", text: $password)
@@ -79,7 +79,7 @@ struct CreateAccountView: View {
                         .frame(maxWidth: .infinity, alignment: .leading)
                         .padding(.horizontal)
                 }
-
+                
                 // Confirm Password Field
                 VStack(alignment: .leading, spacing: 5) {
                     SecureField("Confirm Password", text: $confirmPassword)
@@ -92,7 +92,7 @@ struct CreateAccountView: View {
                         .frame(maxWidth: .infinity, alignment: .leading)
                         .padding(.horizontal)
                 }
-
+                
                 // General Error Message for Firebase Issues
                 if let errorMessage = errorMessage {
                     Text(errorMessage)
@@ -133,7 +133,7 @@ struct CreateAccountView: View {
     private func validateName() {
         nameErrorMessage = name.isEmpty ? "Name cannot be empty." : nil
     }
-
+    
     private func validateEmail() {
         if email.isEmpty {
             emailErrorMessage = "Email cannot be empty."
@@ -143,7 +143,7 @@ struct CreateAccountView: View {
             emailErrorMessage = nil
         }
     }
-
+    
     private func validatePassword() {
         if password.isEmpty {
             passwordErrorMessage = "Password cannot be empty."
@@ -153,7 +153,7 @@ struct CreateAccountView: View {
             passwordErrorMessage = nil
         }
     }
-
+    
     private func validateConfirmPassword() {
         if confirmPassword.isEmpty {
             confirmPasswordErrorMessage = "Please confirm your password."

@@ -11,7 +11,7 @@ import FirebaseAuth
 class EventsViewModel: ObservableObject {
     @Published var events: [Event] = []
     private var firestoreService = FirestoreService()
-
+    
     // Fetch events based on user's preferences
     func fetchEvents(completion: @escaping () -> Void) {
         guard let userID = FirebaseAuth.Auth.auth().currentUser?.uid else { return }

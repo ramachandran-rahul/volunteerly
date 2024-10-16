@@ -12,7 +12,7 @@ class ContentViewModel: ObservableObject {
     @Published var isLoading = true
     @Published var isDataLoaded = false
     @Published var showSplashScreen = true
-
+    
     // Function to handle splash screen delay for logged-out users
     func showSplashScreenForLoggedOutUser() {
         // Splash screen delay for 2 seconds before going to login view
@@ -21,7 +21,7 @@ class ContentViewModel: ObservableObject {
             self.showSplashScreen = false
         }
     }
-
+    
     // Function to load data for logged-in users
     func loadDataForLoggedInUser(eventsViewModel: EventsViewModel, completion: @escaping () -> Void) {
         // Fetch events and user data for a logged-in user
